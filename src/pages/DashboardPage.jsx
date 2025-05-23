@@ -26,9 +26,9 @@ export default function DashboardPage() {
   }, [range]);
 
   return (
-    <>
+    <div className="app-container d-flex flex-column min-vh-100">
       <Navbar />
-      <main className="container py-5">
+      <main className="app-content container py-5 flex-grow-1">
         <h2 className="text-center mb-4">Dashboard</h2>
 
         <TimeRangeFilter selected={range} onChange={setRange} />
@@ -50,6 +50,6 @@ export default function DashboardPage() {
       </main>
       <Footer />
       <ChatWidget />
-    </>
+    </div>
   );
 }

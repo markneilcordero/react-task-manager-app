@@ -13,9 +13,9 @@ import ResetAppCard from "../components/settings/ResetAppCard";
 
 export default function SettingsPage() {
   return (
-    <>
+    <div className="app-container d-flex flex-column min-vh-100">
       <Navbar />
-      <main className="container py-5">
+      <main className="app-content container py-5 flex-grow-1">
         <h2 className="text-center mb-4">App Settings</h2>
 
         <div className="row g-4">
@@ -34,6 +34,6 @@ export default function SettingsPage() {
       </main>
       <Footer />
       <ChatWidget />
-    </>
+    </div>
   );
 }

@@ -15,7 +15,7 @@ export default function LandingPage() {
   return (
     <>
       <Navbar />
-      <main className="container py-5">
+      <main>
         <HeroSection />
         <FeatureHighlights />
         <OnboardingSteps />

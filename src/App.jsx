@@ -13,9 +13,9 @@ import ChatWidget from "./components/chat/ChatWidget";
 function App() {
   return (
     <Router>
-      <div className="d-flex flex-column min-vh-100">
+      <div>
 
-        <div className="flex-grow-1">
+        <div>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/tasks" element={<TasksPage />} />
