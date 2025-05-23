@@ -4,9 +4,9 @@ import { generateId } from "./uuidGenerator";
 const STORAGE_KEY = "task-manager-app-data";
 
 /**
- * Handles chatbot commands and returns a response.
+ * Handles chatbot commands and returns a structured response.
  * @param {string} input - The user's command input.
- * @returns {string} - Bot's response.
+ * @returns {{ success: boolean, message: string }} - Bot response.
  */
 export function handleCommand(input) {
   const trimmed = input.trim();
@@ -15,25 +15,34 @@ export function handleCommand(input) {
   // Add Task
   if (lower.startsWith("add task:")) {
     const taskText = trimmed.substring(9).trim();
-    if (!taskText) return "Please specify the task after 'Add task:'.";
+    if (!taskText) {
+      return { success: false, message: "Please specify the task after 'Add task:'." };
+    }
+
     const tasks = getLocalData(STORAGE_KEY, []);
     tasks.push({
       id: generateId(),
       name: taskText,
       completed: false,
-      createdAt: new Date().toISOString()
+      priority: "Medium",
+      dueDate: "",
+      createdAt: new Date().toISOString(),
     });
+
     saveLocalData(STORAGE_KEY, tasks);
-    return `Task "${taskText}" added successfully.`;
+    return { success: true, message: `Task "${taskText}" added successfully!` };
   }
 
   // Show Completed Tasks
   if (lower === "show completed tasks") {
     const tasks = getLocalData(STORAGE_KEY, []);
-    const completed = tasks.filter(t => t.completed);
-    return completed.length
-      ? `You have ${completed.length} completed task(s).`
-      : "You have no completed tasks.";
+    const completed = tasks.filter((t) => t.completed);
+    return {
+      success: true,
+      message: completed.length
+        ? `You have ${completed.length} completed task(s).`
+        : "You have no completed tasks.",
+    };
   }
 
   // Export Data
@@ -48,14 +57,18 @@ export function handleCommand(input) {
     anchor.click();
     URL.revokeObjectURL(url);
 
-    return "Your data has been exported.";
+    return { success: true, message: "Your data has been exported." };
   }
 
   // Import Data
   if (lower === "import data") {
     document.getElementById("importFileInput")?.click();
-    return "Please choose a .json file to import.";
+    return { success: true, message: "Please choose a .json file to import." };
   }
 
-  return "I didn't understand that command. Try: Add task: Finish homework";
+  // Unknown Command
+  return {
+    success: false,
+    message: "I didn't understand that command. Try: Add task: Finish homework",
+  };
 }

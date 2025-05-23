@@ -3,7 +3,7 @@ import { defaultSuggestedCommands } from "../../constants/commands";
 import { handleCommand } from "../../utils/commandInterpreter";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-export default function ChatWidget() {
+export default function ChatWidget({ onTaskAdded }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newCommand, setNewCommand] = useState("");
@@ -20,16 +20,19 @@ export default function ChatWidget() {
     if (!trimmed) return;
 
     const userMessage = { type: "user", text: trimmed };
-    const response = handleCommand(trimmed);
-    const botMessage = { type: "bot", text: `🤖 ${response}` };
+    const result = handleCommand(trimmed);
+    const botMessage = { type: "bot", text: `🤖 ${result.message}` };
 
     setMessages((prev) => [...prev, userMessage, botMessage]);
     setNewCommand("");
+
+    if (result.success && trimmed.toLowerCase().startsWith("add task:") && typeof onTaskAdded === "function") {
+      onTaskAdded();
+    }
   };
 
   return (
     <>
-      {/* Floating Chat Button */}
       <button
         className="btn btn-primary rounded-circle d-flex align-items-center justify-content-center position-fixed"
         style={{
@@ -46,7 +49,6 @@ export default function ChatWidget() {
         💬
       </button>
 
-      {/* Chat Widget */}
       {open && (
         <div
           className="chat-widget bg-white border rounded shadow-lg d-flex flex-column position-fixed"
@@ -58,7 +60,6 @@ export default function ChatWidget() {
             zIndex: 1051,
           }}
         >
-          {/* Header */}
           <div className="d-flex justify-content-between align-items-center border-bottom px-3 py-2 bg-primary text-white rounded-top">
             <strong>🤖 AI Assistant</strong>
             <button
@@ -70,7 +71,6 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          {/* Messages */}
           <div
             className="flex-grow-1 overflow-auto px-3 py-2"
             ref={scrollRef}
@@ -80,9 +80,7 @@ export default function ChatWidget() {
               <div
                 key={idx}
                 className={`mb-2 d-flex ${
-                  msg.type === "user"
-                    ? "justify-content-end"
-                    : "justify-content-start"
+                  msg.type === "user" ? "justify-content-end" : "justify-content-start"
                 }`}
               >
                 <div
@@ -99,7 +97,6 @@ export default function ChatWidget() {
             ))}
           </div>
 
-          {/* Suggested Commands + Input */}
           <div className="border-top px-3 pt-2 pb-3 bg-white">
             <h6 className="fw-bold mb-2">💡 Suggested Commands</h6>
             <ul className="list-unstyled small mb-2">

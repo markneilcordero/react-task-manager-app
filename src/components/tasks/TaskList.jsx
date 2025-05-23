@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import TaskCard from "./TaskCard";
 import { getLocalData, saveLocalData } from "../../utils/localStorageHelpers";
 
 const STORAGE_KEY = "task-manager-app-data";
 
-export default function TaskList() {
-  const [tasks, setTasks] = useState([]);
-
-  useEffect(() => {
-    setTasks(getLocalData(STORAGE_KEY, []));
-  }, []);
-
+export default function TaskList({ tasks, onUpdate }) {
   const handleUpdate = (updatedTask) => {
     const updatedList = tasks.map((task) =>
       task.id === updatedTask.id ? updatedTask : task
     );
     saveLocalData(STORAGE_KEY, updatedList);
-    setTasks(updatedList);
+    onUpdate?.();
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       const filtered = tasks.filter((task) => task.id !== id);
       saveLocalData(STORAGE_KEY, filtered);
-      setTasks(filtered);
+      onUpdate?.();
     }
   };
 

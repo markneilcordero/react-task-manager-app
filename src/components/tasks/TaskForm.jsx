@@ -44,7 +44,7 @@ export default function TaskForm({ onSave }) {
     alert(form.id ? "Task updated!" : "Task added!");
 
     setForm(defaultForm);
-    if (onSave) onSave(); // Optional callback
+    onSave?.(); // refresh task list
   };
 
   return (
@@ -61,7 +61,6 @@ export default function TaskForm({ onSave }) {
             placeholder="Enter task..."
           />
         </div>
-
         <div className="col-md-3 mb-3">
           <label className="form-label">Priority</label>
           <select
@@ -75,7 +74,6 @@ export default function TaskForm({ onSave }) {
             <option>High</option>
           </select>
         </div>
-
         <div className="col-md-3 mb-3">
           <label className="form-label">Due Date</label>
           <input
@@ -87,7 +85,6 @@ export default function TaskForm({ onSave }) {
           />
         </div>
       </div>
-
       <div className="d-grid">
         <button type="submit" className="btn btn-primary">
           {form.id ? "Update Task" : "Add Task"}
