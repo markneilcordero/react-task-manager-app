@@ -15,6 +15,7 @@ const STORAGE_KEY = "task-manager-app-data";
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [taskToEdit, setTaskToEdit] = useState(null);
+  const [filter, setFilter] = useState({ status: "All", priority: "All" });
 
   useEffect(() => {
     refreshTasks();
@@ -26,6 +27,20 @@ export default function TasksPage() {
     setTaskToEdit(null); // Reset form after save
   };
 
+  const applyFilters = (tasks) => {
+    return tasks.filter((task) => {
+      const matchesStatus =
+        filter.status === "All" ||
+        (filter.status === "Completed" && task.completed) ||
+        (filter.status === "Pending" && !task.completed);
+
+      const matchesPriority =
+        filter.priority === "All" || task.priority === filter.priority;
+
+      return matchesStatus && matchesPriority;
+    });
+  };
+
   return (
     <div className="app-container d-flex flex-column min-vh-100">
       <Navbar />
@@ -35,11 +50,15 @@ export default function TasksPage() {
         <TaskForm onSave={refreshTasks} taskToEdit={taskToEdit} />
 
         <div className="d-flex justify-content-between align-items-center my-3">
-          <FilterBar />
+          <FilterBar onFilterChange={(newFilter) => setFilter(newFilter)} />
           <SortControls />
         </div>
 
-        <TaskList tasks={tasks} onUpdate={refreshTasks} onEdit={setTaskToEdit} />
+        <TaskList
+          tasks={applyFilters(tasks)}
+          onUpdate={refreshTasks}
+          onEdit={setTaskToEdit}
+        />
       </main>
       <Footer />
       <ChatWidget onTaskAdded={refreshTasks} />
